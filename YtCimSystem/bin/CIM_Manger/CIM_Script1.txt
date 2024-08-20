@@ -1,0 +1,53 @@
+var title_1 = 'PANELINFO,PANEL_ID,READ_PANEL_ID_TYPE,PRODUCT_SPEC,STEP_ID,EQP_ID,UNIT_ID,SUB_NUIT_ID,RECIPE_ID,PG_ID,CARRIER_ID,JUDGE,START_TIME,END_TIME,REPAIRCNT,OPERATOR_ID,WORKOROED_ID,TP_RESULT,TP_ERROR\n';
+
+
+var title_2 = '\nAOI_DEFECTINFO,DEFECT_NO,DEFECT_CODE,DEF_NAME,DEF_COORDINATES_X,DEF_COORDINATES_Y,DEF_ZONE,DEF_PATTERN,DEF_AREA,IMAGEURL,IMAGENAME\n';
+
+//标题内容 参数1:上传标题部分  参数2:标题的分割符号 参数3:上传内容填充字符 参数4:上传内容分割符   返回值:全为填充字符的字符串
+var upContent1 = Yt.toCombinaFtpContent(title_1 , ',' , '***' , ',');
+
+//获取产品ID
+var PanelID = Yt.toGetPanelID();
+if(PanelID != '')
+{
+	Yt.toPrintlog('------------获取到产品ID----------' + PanelID, 'green');
+	//读取缺陷信息 参数1:产品ID  参数2:比例尺  
+	var defectInfo = Yt.toGetDefectInfo(PanelID ,  0.025);
+	var  defect_upContent = '';
+	if(defectInfo[defectInfo.length - 2] == 'NG')
+	{
+		//开始组装第一条信息的内容
+		var title1_insertContent = 'PANELDATA:1#' +  PanelID +':2#AC300:5#M1A2MOLB07ULD100:6#M1A2MOLB07ULD101:7#NG:12#' + defectInfo[defectInfo.length - 4] +':13#' + defectInfo[defectInfo.length - 3] + ':14#Y12NI22311001:17';
+	
+		for(var i = 0; i < defectInfo.length - 4; i++)
+		{
+			//标题内容 参数1:上传标题部分  参数2:标题的分割符号 参数3:上传内容填充字符 参数4:上传内容分割符   返回值:全为填充字符的字符串
+			var upContent2 = Yt.toCombinaFtpContent(title_2 , ',' , '***' , ',');
+			var temContent = defectInfo[i].split(',');
+			var Content =  temContent[1] + ':2#A35:3#BL白点:4#1000:5#2000:6#5:7#White:8#300:9';
+			defect_upContent +=  Yt.toFillSpecialSig(upContent2, ',' ,  Content, '#' , ':') + '\n';
+		}
+	}
+}
+
+
+//上传内容 参数1:需要更新的字符串 参数2:参数1的分隔符  参数3:填充字符串 参数4:参数3的分隔符  参数5:参数4的分隔符 返回值:更新后的字符串
+var panelInfo = Yt.toFillSpecialSig(upContent1, ',' ,  title1_insertContent, '#' , ':');
+
+//组合汇总的信息
+var uploadContent = title_1 + panelInfo + title_2 + defect_upContent;
+Yt.toPrintlog('------------组合后的信息----------\n' + uploadContent + '\n', 'yellow');
+
+//获取事件戳 参数1: 获取时间字符串的几位
+var time = Yt.toGetTimepoint(8);
+var uncontrolPath1 = '/' + time + '/DATA';
+//var uncontrolPath2 = '/' + time + '/IMAGE';
+
+//FTP上传文件 参数1:产品ID 参数2:路径是否大写 参数3:FTP上传路径 参数4:ID的分割长度(-隔开) 参数5:变化的路径 参数6:传文件的内容  参数7:文件后缀  参数8:文件类型(image/ascii)  
+//var bool = Yt.toUploadFile(PanelID, 1 ,'filedata/on', '15', uncontrolPath1 , uploadContent, 'csv','ascii');
+//if(bool == 0)
+//{
+	//Yt.toPrintlog('------------文件上传失败----------\n', 'red');
+//}
+
+

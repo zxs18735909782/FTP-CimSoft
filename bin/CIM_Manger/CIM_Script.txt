@@ -1,0 +1,14 @@
+//将字符串写入PLC 
+/*
+Yt.toWriteQString('D100', 'string');
+
+//从PLC读取字符串 
+var str = Yt.toReadQString('D100', 20);
+Yt.toPrintlog('------------日志内容----------' + str, 'yellow');
+Yt.toSleep(1000);
+*/
+
+//获取文件夹的列表  参数1:扫描的文件夹路径 参数2:扫描周期 
+ var folderList = Yt.getOtherFile('F:/SaveImage', 5);
+ Yt.toPrintlog('------------文件内容----------' + folderList, 'yellow');
+Yt.toSleep(1000);

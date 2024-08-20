@@ -1,0 +1,141 @@
+#include "ytcimscriptthread.h"
+
+#include <QApplication>
+#include <QFile>
+
+YtCimScriptThread::YtCimScriptThread(QThread *parent)
+{
+
+}
+
+YtCimScriptThread::~YtCimScriptThread()
+{
+
+}
+
+void YtCimScriptThread::run()
+{
+    while(true)
+    {
+        m_Engine.evaluate(m_RunScript);
+        if(m_Engine.hasUncaughtException())
+        {
+            QScriptValue Err = m_Engine.uncaughtException();
+            toPrintLog(Err.toString(), Qt::yellow);
+        }
+
+        if(m_RunState == false)
+        {
+            m_YtCimScript.m_RunState = m_RunState;
+            toPrintLog(u8"CIM_THREAD:--------终止CIM上传-------", Qt::red);
+            break;
+        }
+    }
+
+}
+
+void YtCimScriptThread::toInitThread()
+{
+    QScriptValue ScriptVal;
+    ScriptVal = m_Engine.newQObject(&m_YtCimScript);
+    m_Engine.globalObject().setProperty("Yt", ScriptVal);
+    m_YtCimScript.m_RunState = m_RunState;
+
+}
+
+void YtCimScriptThread::toStart(bool isOnce)
+{
+    toPrintLog(u8"CIM_THREAD:--------启动CIM上传-------", Qt::green);
+    if(isOnce)
+    {
+        m_RunState = false;
+    }
+    else
+    {
+        m_RunState = true;
+    }
+
+    m_YtCimScript.m_RunState = m_RunState;
+
+    start();
+}
+
+void YtCimScriptThread::toStop()
+{
+    m_RunState = false;
+    m_YtCimScript.m_RunState = m_RunState;
+
+}
+
+void YtCimScriptThread::toSetScript(QString Script)
+{
+    m_RunScript = Script;
+}
+
+bool YtCimScriptThread::toLoadModel()
+{
+    QString ModelPath = QApplication::applicationDirPath() + "/CIM_Manger" ;
+
+    QDir dir(ModelPath);
+    if(!dir.exists())
+    {
+        dir.mkpath(dir.path());
+    }
+
+    QFile file(ModelPath + "/CIM_Script.txt");
+    if(file.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        QByteArray array;
+        while (!file.atEnd()) {
+            array += file.readLine();
+        }
+        m_RunScript = QString(array);
+        file.close();
+    }
+
+    return true;
+
+}
+
+void YtCimScriptThread::toSaveModel()
+{
+    QString ModelPath = QApplication::applicationDirPath() + "/CIM_Manger" ;
+
+    QDir dir(ModelPath);
+    if(!dir.exists())
+    {
+        dir.mkpath(dir.path());
+    }
+
+    QFile file(ModelPath + "/CIM_Script.txt");
+    if(file.open(QIODevice::WriteOnly | QIODevice::Text))
+    {
+        file.write(m_RunScript.toUtf8());
+        file.close();
+    }
+}
+
+void YtCimScriptThread::toSetObject(YtNetWorkDo *tYtNetWork, int flag)
+{
+    if(flag == 0)
+    {
+        m_YtCimScript.m_YtFTPNetWorkDo = tYtNetWork;
+    }
+
+    if(flag == 1)
+    {
+        m_YtCimScript.m_YtShareFolderNetWorkDo = tYtNetWork;
+    }
+
+    if(flag == 2)
+    {
+        m_YtCimScript.m_YtSQLNetWork    = tYtNetWork;
+    }
+}
+
+void YtCimScriptThread::toSetRecordTime(QString tTime)
+{
+    m_YtCimScript.m_recordTime = tTime;
+}
+
+

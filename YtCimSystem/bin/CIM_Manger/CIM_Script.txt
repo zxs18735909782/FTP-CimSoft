@@ -1,0 +1,81 @@
+//标题1
+
+/*
+title1 = 'PNL_INF^FIELD_COUNT^LOT_ID^GLS_ID^CF_GLS_ID^PNL_ID^FG_CODE^STEP_ID^EQP_ID^OPERATOR_ID^LOT_TYPE^AT_GRADE^ASSY_GRADE^CT_GRADE^MOD_GRADE^REVISION_CODE^PANEL_WIDTH^PANEL_HEIGHT^START_TIME^END_TIME';
+
+//标题2
+title2 = 'OTHER_INF^FIELD_COUNT\nOTHER_DAT^1';
+
+//标题3
+title3 = 'DFT_INF^FIELD_COUNT^DEFECT_CODE^DEFECT_NO^ADDRESS_X^ADDRESS_Y^COOR_X^COOR_Y^RGB^AREA^DEFECT_SIZE^MURA_LEVEL^IMAGE1';
+
+//生成标题1的空内容
+
+//标题内容 参数1:上传标题部分  参数2:标题的分割符号 参数3:上传内容填充字符 参数4:上传内容分割符   返回值:全为填充字符的字符串
+var upContent_title1 = Yt.toCombinaFtpContent(title1 , '^' , '****' , '^');
+
+//查询数据库 参数1:查询内容  参数2:查询数据表  参数3:刷新时间 
+var isSuccess = Yt.QueryProductInfo('FrameID,ClientIndex,ErrCount,PosInfo,ErrInfo,RecordTime,ImagePath', '`ag01-100`.conclusion', 10);
+
+//获取数据库单条记录 
+var sigelInfo = Yt.ParseSigleInfo();
+
+Yt.toPrintlog('------------获取到的单条记录----------\n' + sigelInfo, 'yellow');
+
+//解析单条记录 参数1:查询内容  参数2:获取的单条记录  参数3:比例尺  
+var defectInfo = Yt.ParseProductDefectInfo('FrameID,ClientIndex,ErrCount,PosInfo,ErrInfo,RecordTime,ImagePath',  sigelInfo, 0.025);
+
+var panelID = defectInfo[defectInfo.length - 1];
+if(panelID != '')
+{
+	Yt.toPrintlog('------------检测产品ID----------' + panelID, 'green');
+	
+	if(defectInfo[defectInfo.length - 3] == 'NG')
+	{
+		var defect_Info;
+		for(var i = 0; i < defectInfo.length - 5; i++)
+		{
+			//标题内容 参数1:上传标题部分  参数2:标题的分割符号 参数3:上传内容填充字符 参数4:上传内容分割符   返回值:全为填充字符的字符串
+			var everyInfo =  Yt.toCombinaFtpContent(title3 , '^' , '****' , '^');
+			var temContent = defectInfo[i].split(',');
+			var Index				= temContent[0];
+			var defefect_index 	= temContent[1];
+			var address_x 		= temContent[5];
+			var address_y 		= temContent[6];
+			var imageName 		= temContent[7];
+			
+			var defect_fill = 'DFT_DAT:1#12:2#Black:3#' + defefect_index +':4#' + address_x + ':5#' + address_y + ':6#' + Index + ':10#' + imageName +':13';
+			//上传内容 参数1:需要更新的字符串 参数2:参数1的分隔符  参数3:填充字符串 参数4:参数3的分隔符  参数5:参数4的分隔符 返回值:更新后的字符串
+			defect_Info += Yt.toFillSpecialSig(everyInfo, '^' , defect_fill, '#' , ':') + '\n';	
+		}
+	
+		//组装标题1对应的内容
+		var start_time = defectInfo[defectInfo.length - 5];
+		var end_time = defectInfo[defectInfo.length - 4];
+		var title1_fille = 'PNL_DAT:1#19:2#' + panelID + ':6#MV238FHM-N52-DD50:7#MF010:8#AMMPC13:9#' + '1000:16#' + '500:17#' + start_time + ':18#' +   end_time + ':19';
+		//上传内容 参数1:需要更新的字符串 参数2:参数1的分隔符  参数3:填充字符串 参数4:参数3的分隔符  参数5:参数4的分隔符 返回值:更新后的字符串
+		var updateContent_title1 = Yt.toFillSpecialSig(upContent_title1, '^' , title1_fille, '#' , ':');
+
+		var upLoadContent = title1 + '\n' + updateContent_title1 + '\n' + title2 + '\n' + title3 + '\n' + defect_Info;
+	
+		
+
+	}
+	else
+	{
+		Yt.toPrintlog('------------产品检测OK----------', 'green');	
+	}
+
+}
+*/
+	
+//获取文件夹的列表  参数1:扫描的文件夹路径 参数2:扫描周期 
+ var folderList = Yt.getOtherFile('D:/SaveImage/zoomimage', 5);
+Yt.toPrintlog('------------文件列表----------' + folderList.length, 'green');
+Yt.toPrintlog('------------文件信息----------' + folderList[0], 'green');
+var fileName = (folderList[0]).split('/');
+fileName = fileName[fileName.length - 1];
+Yt.toPrintlog('------------文件名称----------' + fileName, 'green');
+
+
+

@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/Images">
+        <file>image/file.png</file>
+        <file>image/folder.png</file>
+        <file>image/Image.png</file>
+        <file>image/refresh.png</file>
+        <file>image/dataCom.png</file>
+        <file>image/dataChange.ico</file>
+        <file>image/DataChange.png</file>
+    </qresource>
+</RCC>

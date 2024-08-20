@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # CimSoftWare
 
 #### 介绍
@@ -38,6 +37,10 @@ Gitee 是 OSCHINA 推出的基于 Git 的代码托管平台（同时支持 SVN�
 4.  [GVP](https://gitee.com/gvp) 全称是 Gitee 最有价值开源项目，是综合评定出的优秀开源项目
 5.  Gitee 官方提供的使用手册 [https://gitee.com/help](https://gitee.com/help)
 6.  Gitee 封面人物是一档用来展示 Gitee 会员风采的栏目 [https://gitee.com/gitee-stars/](https://gitee.com/gitee-stars/)
+=======
+# FTP-CimSoft
+这是一个C++、QT写的CIM交互软件，软件具备 文件上传、下载、文件信息读取、FTP文件内容读取(需FTP服务器)开通权限，采用QT脚本化流程，使兼容性更强，可以根据客户需求，快速完成流程的代码编写，而无需重新开发软件。
+>>>>>>> 660bf073da4dc57ed3894c5c86a21e8e5e9fa499
 =======
 # FTP-CimSoft
 这是一个C++、QT写的CIM交互软件，软件具备 文件上传、下载、文件信息读取、FTP文件内容读取(需FTP服务器)开通权限，采用QT脚本化流程，使兼容性更强，可以根据客户需求，快速完成流程的代码编写，而无需重新开发软件。

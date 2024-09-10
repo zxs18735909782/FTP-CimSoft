@@ -5,6 +5,7 @@
 #include <QFile>
 #include <QDir>
 #include <QApplication>
+#include <QSettings>
 
 
 YtCimScript::YtCimScript(QObject *parent)
@@ -181,8 +182,9 @@ QStringList YtCimScript::toGetDefectInfo(QString PanelID, QString Factory, QStri
                    .arg(OutImList.size()).arg(C_Size) , "white");
         for(int i = 0; i < C_Size; i++)
         {
+
             double width = tAllBlobInfo.GetBlob.at(i).Len1 * 2;             //长半轴 *2 恢复为原有的长度
-            double height= tAllBlobInfo.GetBlob.at(i).Len1 * 2;
+            double height= tAllBlobInfo.GetBlob.at(i).Len2 * 2;
             double area  = width * height;
             double x_pos = abs(tAllBlobInfo.GetBlob.at(i).Pos.Center.x - tAllBlobInfo.m_GetPos[0].x) * scale_x;
             double y_pos = abs(tAllBlobInfo.GetBlob.at(i).Pos.Center.y - tAllBlobInfo.m_GetPos[0].y) * scale_y;
@@ -243,7 +245,7 @@ QStringList YtCimScript::toGetDefectInfo(QString PanelID, QString Factory, QStri
         for(int j = 0; j < T_Size; j++)
         {
             double width = tAllBlobInfo.GetBlob.at(j).Len1 * 2;             //长半轴 *2 恢复为原有的长度
-            double height= tAllBlobInfo.GetBlob.at(j).Len1 * 2;
+            double height= tAllBlobInfo.GetBlob.at(j).Len2 * 2;
             double area  = width * height;
             double x_pos = abs(tAllBlobInfo.GetBlob.at(j).Pos.Center.x - tAllBlobInfo.m_GetPos[0].x) * scale_x;
             double y_pos = abs(tAllBlobInfo.GetBlob.at(j).Pos.Center.y - tAllBlobInfo.m_GetPos[0].y) * scale_y;
@@ -1262,6 +1264,25 @@ QString YtCimScript::toReadQString(QString ReadAdr, int len)
         return m_YtPlcDo->ReadString(ReadAdr,len).trimmed();
     }
     return "ERRR";
+}
+
+QString YtCimScript::toReadIni(QString filePath, QString productName)
+{
+    QString CfFilePath = QString(u8"%1/%2/采集单元/CA0/BasePar.ini").arg(filePath).arg(productName);
+    QSettings m_Setting(CfFilePath, QSettings::IniFormat);
+    m_Setting.setIniCodec("GB2312");
+
+    double cfWid  = m_Setting.value("m_NewSurFacePar/UBlobFilter.dLSize","3").toDouble();
+    double cfHigh = m_Setting.value("m_NewSurFacePar/UBlobFilter.dWSize","3").toDouble();
+
+    QString TftFilePath = CfFilePath;
+    TftFilePath = TftFilePath.replace("CA0", "TA0");
+
+    double tftWid  = m_Setting.value("m_NewSurFacePar/UBlobFilter.dLSize","3").toDouble();
+    double tfthigh = m_Setting.value("m_NewSurFacePar/UBlobFilter.dWSize","3").toDouble();
+
+    return QString("%1,%2,%3,%4").arg(cfWid).arg(cfHigh).arg(tftWid).arg(tfthigh);
+
 }
 
 void YtCimScript::toLoadSmallBlobIm(QVector<QImage> &OutImList, QString filename)

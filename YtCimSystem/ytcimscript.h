@@ -93,6 +93,9 @@ public:
     Q_INVOKABLE void toWriteQString(QString WritAdr, QString val);
     Q_INVOKABLE QString toReadQString(QString ReadAdr, int len); //读取字符串
 
+    /************************************ini文件交互*******************************************/
+    Q_INVOKABLE QString toReadIni(QString filePath, QString productName);
+
 private:
     void toLoadSmallBlobIm(QVector<QImage> &OutImList, QString filename);
 

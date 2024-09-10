@@ -154,6 +154,12 @@ void YtCimScriptUI::toInsertScript(QString str)
                     "var str = Yt.toReadQString('D0', 20);";
     }
 
+    if(str == u8"获取检测参数")
+    {
+        AppendTxt = u8"//从算法文件读取检测规格 参数1:算法文件读取路径  参数2:当前配方及配方名称(1_TEST) \n"
+                    "var detectRule = Yt.toReadIni('D:/GSI_Client_V4/PluginModels', '1_TEST');";
+    }
+
 
     ui->ytEditTool->toAppendData(AppendTxt);
 
